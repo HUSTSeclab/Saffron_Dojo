@@ -7,7 +7,7 @@
 #include "util.h"
 
 #define BUF_LEN 0x40
-#define OOB_LEN 0x80
+#define OOB_LEN 0x100
 
 void init()
 {
@@ -27,30 +27,41 @@ void read_flag(char *filename)
 
 	if (!fp) {
 		perror("[-] fopen failed");
+		exit(0);
 	}
 
 	p = fgets(flag, sizeof(flag), fp);
 	if (!p) {
 		perror("[-] fgets failed");
 		fclose(fp);
+		exit(0);
 	}
 	
 	printf("%s\n", flag);
 
 	fclose(fp);
+	exit(0);
+}
+
+void read_input()
+{
+	char buffer[BUF_LEN];
+
+	printf("Say something at %p\n", buffer);
+	printf(">>> ");
+	read(0, buffer, OOB_LEN);
+}
+
+void play()
+{
+	read_input();
 }
 
 int main()
 {
-	char buffer[BUF_LEN];
-
 	init();
 	print_desc();
-
-        printf("Say something at %p\n", buffer);
-        printf(">>> ");
-	read(0, buffer, OOB_LEN);
-
+        play();
 	print_exit();
 
 	return 0;
