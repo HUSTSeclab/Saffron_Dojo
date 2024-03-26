@@ -1,5 +1,3 @@
-// gcc ./ret2libc_4.c -Wno-format-security -o ret2libc_4
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

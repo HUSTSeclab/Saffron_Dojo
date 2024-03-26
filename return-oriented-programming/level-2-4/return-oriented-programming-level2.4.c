@@ -1,5 +1,3 @@
-// gcc ./ret2libc_5.c -Wno-format-security -o ret2libc_5
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,7 +25,7 @@ void leave_message()
         read(0, buf, BUF_LEN);
 
         puts("Your message is:");
-        printf(buf);            // vulnerable printf
+        printf(buf);
 }
 
 void close_file()
