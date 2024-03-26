@@ -4,16 +4,17 @@
 #include <unistd.h>
 #include "util.h"
 
-#define BUF_LEN 0x100
-char *flag = "/flag\0";
+#define BUF_LEN 0x30
+#define OOB_LEN 0x400
+char flag[] = "/flag\0";
+char name[BUF_LEN];
 
-void gift()
+void gifts()
 {
-        // TODO here
         __asm__ __volatile__(
-                "ldp x2, x3, [sp], #16; ret;"
-                "ldp x0, x1, [sp], #16; ret;"
-                "svc 0; ret;"
+                "ldr x8, [sp, #0x18]; ldp x29, x30, [sp], #0x20; ret;"
+                "ldp x2, x3, [sp], #0x20; ldp x29, x30, [sp], #0x20 ; ret;"
+                "ldp x0, x1, [sp], #0x10; ldp x29, x30, [sp], #0x10 ; ret;"
         );
 }
 
@@ -24,15 +25,27 @@ void init()
 	setvbuf(stderr, 0, 2, 0);
 }
 
+void read_input()
+{
+        char buf[BUF_LEN];
+
+        puts("Who is your favorite Pokemon?");
+        read(0, buf, OOB_LEN);
+}
+
+void play()
+{
+        puts("Input your name");
+        read(0, name, BUF_LEN);
+        printf("Hello, %s\n", name);
+        read_input();
+}
+
 int main()
 {
-        char s[0x10];
-
         init();
         print_desc();
-        
-        read(0, s, BUF_LEN); // vulnerable read
-
+        play();
         print_exit();
 
 	return 0;
