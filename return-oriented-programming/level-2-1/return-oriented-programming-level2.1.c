@@ -4,11 +4,30 @@
 #include <unistd.h>
 #include "util.h"
 
+#define NAME_LEN 0x40
 #define BUF_LEN 0x100
+char fname[NAME_LEN];
+
+void init()
+{
+	setvbuf(stdin, 0, 2, 0);
+	setvbuf(stdout, 0, 2, 0);
+	setvbuf(stderr, 0, 2, 0);
+}
+
+void gift()
+{
+        __asm__ __volatile__(
+                "ldr x0, [x19] ; ldp x19, x20, [sp, #0x10] ; ldp x29, x30, [sp], #0x20 ; ret;"
+                "ldr x17, [sp, #0x10] ; ldr x17, [x17]; add x17, x17, #4 ; br x17; "
+        );
+}
 
 void open_file()
 {
-        puts("No No No");
+        puts("Input file name:");
+        read(0, fname, NAME_LEN);
+        puts("No open this time");
 }
 
 void read_flag()
@@ -18,16 +37,15 @@ void read_flag()
 
 void leave_message()
 {
-        char buf[0x30];
+        char message[0x30];
+        
         puts("Input your message:");
-        read(0, buf, BUF_LEN); // vulnerable read
+        read(0, message, BUF_LEN); 
 }
 
-void init()
+void play_game()
 {
-	setvbuf(stdin, 0, 2, 0);
-	setvbuf(stdout, 0, 2, 0);
-	setvbuf(stderr, 0, 2, 0);
+        leave_message();
 }
 
 void close_file()
@@ -39,7 +57,7 @@ void menu()
 {
         puts("1. Open file");
         puts("2. Read flag");
-        puts("3. Leave message");
+        puts("3. Play game");
         puts("4. Close file");
         puts("5. Exit");
         puts("Choice >> ");
@@ -65,7 +83,7 @@ int main()
                         read_flag();
                         break;
                 case 3:
-                        leave_message();
+                        play_game();
                         break;
                 case 4:
                         close_file();
