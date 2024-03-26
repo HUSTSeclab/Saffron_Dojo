@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "util.h"
 
-#define BUF_LEN 0x100
+#define BUF_LEN 0x200
 
 void open_file()
 {
@@ -22,10 +22,15 @@ void leave_message()
 {
         char buf[0x30];
         puts("Input your message:");
-        read(0, buf, BUF_LEN);  // vulnerable read
+        read(0, buf, BUF_LEN);  
 
         puts("Your message is:");
-        printf(buf);            // vulnerable printf
+        printf(buf);            
+}
+
+void play_game()
+{
+        leave_message();
 }
 
 void close_file()
@@ -70,7 +75,7 @@ int main()
                         read_flag();
                         break;
                 case 3:
-                        leave_message();
+                        play_game();
                         break;
                 case 4:
                         close_file();
