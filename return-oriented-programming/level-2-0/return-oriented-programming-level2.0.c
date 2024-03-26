@@ -5,24 +5,41 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 #include "util.h"
 
+#define NAME_LEN 0x20
 #define BUF_LEN 0x100
-char *gift_flag = "/flag";
-char *gift_binsh = "/bin/sh\0/bin/sh\0-p\0";
+char gift[] = "/bin/cat\0/flag\0";
 int fd;
+char fname[NAME_LEN];
+
+int read_int()
+{
+	char buf[0x10];
+	read(0, buf, 0x10);
+	return atoi(buf);
+}
 
 void list_dir()
 {
-	system("ls");
+	char *list_argv[] = {".", ".", NULL};
+
+        if (fork() == 0) {
+                // child
+                execv("/bin/ls", list_argv);
+                exit(0);
+        }
+        else {
+                // parent
+                wait(NULL);
+        }
 }
 
 void open_file()
 {
-	char fname[16];
-
         puts("Input file name:");
-        scanf("%16s", fname);
+        fgets(fname, NAME_LEN, stdin);
         fd = open(fname, 0);
 	if (fd < 0) {
 		printf("无法打开文件\n");
@@ -33,15 +50,18 @@ void open_file()
 void read_flag()
 {
         puts("No No No");
-        // TODO here
-        __asm__ __volatile__("ldp x2, x3, [sp], #16; ret;");
 }
 
 void leave_message()
 {
-        char buf[0x30];
+        char message[0x30];
         puts("Input your message:");
-        read(0, buf, BUF_LEN); // vulnerable read
+        read(0, message, BUF_LEN); 
+}
+
+void play_game()
+{
+        leave_message();
 }
 
 void close_file()
@@ -65,7 +85,7 @@ void menu()
         puts("1. List dir");
         puts("2. Open file");
         puts("3. Read flag");
-        puts("4. Leave message");
+        puts("4. Play game");
         puts("5. Close file");
         puts("6. Exit");
         puts("Choice >> ");
@@ -73,7 +93,7 @@ void menu()
 
 int main()
 {
-        int choice, flag = 1;
+        int flag = 1;
 
         init();
         print_desc();
@@ -81,8 +101,7 @@ int main()
         while (flag) {
                 /* code */
                 menu();
-                scanf("%d", &choice);
-                switch ( choice )
+                switch (read_int())
                 {
                 case 1:
                         list_dir();
@@ -94,7 +113,7 @@ int main()
                         read_flag();
                         break;
                 case 4:
-                        leave_message();
+                        play_game();
                         break;                        
                 case 5:
                         close_file();
