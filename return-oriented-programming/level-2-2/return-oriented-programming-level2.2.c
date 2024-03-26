@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include "util.h"
 
-#define BUF_LEN 0x100
+#define BUF_LEN 0x200
 
 void open_file()
 {
@@ -20,13 +20,18 @@ void leave_message()
 {
         char buf[0x30];
         puts("Input your message:");
-        read(0, buf, BUF_LEN); // vulnerable read
+        read(0, buf, BUF_LEN); 
+}
+
+void play_game()
+{
+        leave_message();
 }
 
 void gift()
 {
         puts("Here is your gift");
-        printf("printf 函数的地址: %p\n", &printf);     // just give libc address to player
+        printf("printf 函数的地址: %p\n", &printf);
 }
 
 void close_file()
@@ -45,7 +50,7 @@ void menu()
 {
         puts("1. Open file");
         puts("2. Read flag");
-        puts("3. Leave message");
+        puts("3. Play game");
         puts("4. Close file");
         puts("5. Gift");
         puts("6. Exit");
@@ -72,7 +77,7 @@ int main()
                         read_flag();
                         break;
                 case 3:
-                        leave_message();
+                        play_game();
                         break;
                 case 4:
                         close_file();
