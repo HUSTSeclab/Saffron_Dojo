@@ -9,8 +9,8 @@
 
 #include <capstone/capstone.h>
 
-#define CAPSTONE_ARCH CS_ARCH_X86
-#define CAPSTONE_MODE CS_MODE_64
+#define CAPSTONE_ARCH CS_ARCH_ARM64
+#define CAPSTONE_MODE CS_MODE_ARM
 
 void print_disassembly(void *shellcode_addr, size_t shellcode_size)
 {
@@ -79,7 +79,7 @@ int main(int argc, char **argv, char **envp)
 
     puts("Executing filter...\n");
     puts("This challenge requires that your shellcode have no NULL bytes!\n");
-    for (int i = 0; i < shellcode_size; i++)
+    for (int i = 0; i < (int)shellcode_size; i++)
         if (!((uint8_t*)shellcode_mem)[i])
         {
             printf("Failed filter at byte %d!\n", i);

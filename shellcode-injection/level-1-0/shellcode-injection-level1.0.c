@@ -9,8 +9,8 @@
 
 #include <capstone/capstone.h>
 
-#define CAPSTONE_ARCH CS_ARCH_X86
-#define CAPSTONE_MODE CS_MODE_64
+#define CAPSTONE_ARCH CS_ARCH_ARM64
+#define CAPSTONE_MODE CS_MODE_ARM
 
 void print_disassembly(void *shellcode_addr, size_t shellcode_size)
 {

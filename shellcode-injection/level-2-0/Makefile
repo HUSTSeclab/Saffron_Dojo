@@ -1,7 +1,7 @@
 TARGET = shellcode-injection-level2.0
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -Wno-error=sign-compare
-LDFLAGS = -lcapstone -z execstack -fno-stack-protector -static
+LDFLAGS = -lcapstone -z execstack -fno-stack-protector
 INCLUDE = -I ../../include ../../include/util.c
 
 .PHONY: all clean

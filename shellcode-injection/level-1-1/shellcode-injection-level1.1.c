@@ -10,8 +10,8 @@
 
 #include <capstone/capstone.h>
 
-#define CAPSTONE_ARCH CS_ARCH_X86
-#define CAPSTONE_MODE CS_MODE_64
+#define CAPSTONE_ARCH CS_ARCH_ARM64
+#define CAPSTONE_MODE CS_MODE_ARM
 
 void print_disassembly(void *shellcode_addr, size_t shellcode_size)
 {
@@ -77,7 +77,7 @@ int main(int argc, char **argv, char **envp)
     shellcode_size = read(0, shellcode_mem, 0x1000);
     assert(shellcode_size > 0);
     srand(time(NULL));
-    int to_skip = (rand() % 0x700) + 0x200;
+    int to_skip = ((rand() % 0x700) >> 2 << 2) + 0x200;
     shellcode_mem += to_skip;
     shellcode_size -= to_skip;
 
