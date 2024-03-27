@@ -15,17 +15,25 @@ void init()
         buf = mmap((void *)0x12340000, 0x1000, 7, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 }
 
-int main()
+void read_input()
 {
         char s[BUF_LEN];
+        
+        puts("Give me your input");
+        scanf("%s", s);
+        memmove(buf, s, BUF_LEN);
+}
 
+void play_game()
+{
+        read_input();
+}
+
+int main()
+{
         init();
         print_desc();
-        puts("Give me your input");
-        
-        scanf("%s", s);        // vulnerable gets
-        strncpy(buf, s, BUF_LEN);
-        
+        play_game();
         print_exit();
 
 	return 0;
