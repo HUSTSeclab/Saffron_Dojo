@@ -9,8 +9,8 @@
 
 #include <capstone/capstone.h>
 
-#define CAPSTONE_ARCH CS_ARCH_X86
-#define CAPSTONE_MODE CS_MODE_64
+#define CAPSTONE_ARCH CS_ARCH_ARM64
+#define CAPSTONE_MODE CS_MODE_ARM
 
 void print_disassembly(void *shellcode_addr, size_t shellcode_size)
 {
@@ -71,7 +71,7 @@ int main(int argc, char **argv, char **envp)
     shellcode_mem = mmap((void *) 0x1e223000, 0x1000, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_ANON, 0, 0);
     print_desc();
     printf("[LEAK] Mapping shellcode memory at %p!\n", shellcode_mem);
-    puts("This question filters the syscall, sysenter, and int instructions");
+    puts("This question filters the svc instructions");
     assert(shellcode_mem == (void *) 0x1e223000);
 
     puts("Reading 0x1000 bytes from stdin.\n");
@@ -79,10 +79,10 @@ int main(int argc, char **argv, char **envp)
     assert(shellcode_size > 0);
 
     puts("Executing filter...\n");
-    for (int i = 0; i < shellcode_size; i++)
+    for (int i = 0; i < (int)(shellcode_size / 4); i += 4)
     {
-        uint16_t *scw = (uint16_t *)((uint8_t*)shellcode_mem + i);
-        if (*scw == 0x80cd || *scw == 0x340f || *scw == 0x050f)
+        uint32_t *scw = (uint32_t *)((uint32_t*)shellcode_mem + i);
+        if (*scw == 0xd4000001)
         {
             printf("Failed filter at byte %d!\n", i);
             exit(1);
